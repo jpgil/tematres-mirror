@@ -3,7 +3,7 @@
 #                                                                        #
 #   Copyright (C) 2004-2008 Diego Ferreyra tematres@r020.com.ar
 #   Distribuido bajo Licencia GNU Public License, versión 2 (de junio de 1.991) Free Software Foundation
-#  
+#
 ###############################################################################################################
 
 
@@ -12,14 +12,15 @@
 ###################################################################################
 ###################################################################################
 
-// Funcion tomada de PHPBB: http://www.phpbb.com/
-// addslashes to vars if magic_quotes_gpc is off
-// this is a security precaution to prevent someone
-// trying to break out of a SQL statement.
-//
+/**
+* Funcion tomada de PHPBB: http://www.phpbb.com/
+* addslashes to vars if magic_quotes_gpc is off
+* this is a security precaution to prevent someone
+* trying to break out of a SQL statement.
+*/
 
 function PHP_magic_quotes(){
-	
+
 if( !get_magic_quotes_gpc() )
 {
         if( is_array($_GET) )
@@ -91,9 +92,9 @@ TrimArray($_POST);
 
 
 
-#
-# Concatena nombrs y variables de GET
-#
+/**
+* Concatena nombres y variables de GET
+*/
 function doValFromGET(){
     $keys_get = array_keys($_GET);
 
@@ -108,6 +109,9 @@ function doValFromGET(){
      };
 }
 
+/**
+* Usada para _GET y _POST
+*/
 function TrimArray(&$array) {
     foreach ($array as $k => $v) {
         global $$k;
@@ -125,7 +129,9 @@ function TrimArray(&$array) {
 };
 
 
-# Seleccionar un valor del array
+/** Seleccionar un valor del array
+*
+*/
 function doValue($array,$nombreValor){
         if(count($array[$nombreValor])>'0'){
         return $array[$nombreValor];
@@ -144,9 +150,9 @@ function doValue($array,$nombreValor){
 
 
 
-#
-# Revisa un check de un form
-#
+/**
+* Revisa un check de un form
+*/
  function do_check($campo,$value,$tipo){
            if ($campo==$value){
               return $tipo;
@@ -154,9 +160,9 @@ function doValue($array,$nombreValor){
            };
 
 
-#
-# Arma un array con una fecha
-#
+/**
+* Arma un array con una fecha
+*/
 function do_fecha($fecha){
    GLOBAL $MONTHS;
    $array=array(
@@ -171,10 +177,10 @@ function do_fecha($fecha){
    }
 
 
-   
-#
-# Arma un intervalo de números o meses
-#
+
+/**
+* Arma un intervalo de números o meses
+*/
 function do_intervalDate($inicio,$fin,$tipo){
    for($interval="$inicio"; $interval<="$fin"; ++$interval){
        if($tipo=='MES'){
@@ -203,9 +209,9 @@ function do_intervalDate($inicio,$fin,$tipo){
    };
 
 
-#
-# Arma un select form a partir de un Array
-#
+/**
+* Arma un select form a partir de un Array
+*/
 function doSelectForm($valores,$valor_selec){
           for($i=0; $i<sizeof($valores);++$i){
              $valor=explode("#",$valores[$i]);
@@ -222,10 +228,9 @@ function doSelectForm($valores,$valor_selec){
 };
 
 
-#
-# Arma un select form a partir de un SQL
-#
-
+/**
+* Arma un select form a partir de un SQL
+*/
 function SqlSelectForm($sql){
     $sqlDos=SQL("select","$sql");
     while ($cons=mysqli_fetch_row($sqlDos[datos])){
@@ -233,13 +238,13 @@ function SqlSelectForm($sql){
 		};
           $array=substr("$array",0,-1);
           $array=explode("&",$array);
-   
-   return $array;
-}	  
 
-#
-# alternador de colores en filas
-#
+   return $array;
+}
+
+/**
+* alternador de colores en filas
+*/
 function do_color_row($i,$selec_color1,$selec_color2){
          $color_row=$selec_color1;
          if(is_int($i/2)){$color_row=$selec_color2;}
@@ -248,9 +253,9 @@ function do_color_row($i,$selec_color1,$selec_color2){
          };
 
 
-#
-# Abre y cierra un código html
-#
+/**
+* Abre y cierra un código html
+*/
 function doListaTag($i,$tag,$contenidoTag,$id=""){
          if($i>0){
                 if($id){
@@ -264,9 +269,10 @@ function doListaTag($i,$tag,$contenidoTag,$id=""){
         return $rows;
 };
 
-#
-# Empaqueta salida y envia por Header como attach
-# Basada en clase PHP ExcelGen Class de (c) Erh-Wen,Kuo (erhwenkuo@yahoo.com).
+/**
+* Empaqueta salida y envia por Header como attach
+* Basada en clase PHP ExcelGen Class de (c) Erh-Wen,Kuo (erhwenkuo@yahoo.com).
+*/
 function sendFile($input,$filename){
                 header ( "Expires: Mon, 1 Apr 1974 05:00:00 GMT");
                 header ( "Last-Modified: " . gmdate("D,d M YH:i:s") . " GMT" );
@@ -279,7 +285,9 @@ function sendFile($input,$filename){
 
 
 
-//From TematresView by Nicolas Poulain
+/**
+* From TematresView by Nicolas Poulain
+*/
 function secure_data($data,$type="alnum") {
 
 	switch ( $type ) {
@@ -290,13 +298,13 @@ function secure_data($data,$type="alnum") {
 		break ;
 
 		case "alpha" :
-			// suppression des caracteres pas catholiques			
+			// suppression des caracteres pas catholiques
  		    $data = preg_replace('/^\W+|\W+$/', '', $data);
 		    $data = arrayReplace ( array("0","1","2","3","4","5","6","7","8","9"), array(""),$data );
 			$data = preg_replace('/\s/', '', $data) ;
 		break ;
 		case "sql" :
-		
+
 			GLOBAL $db;
 			// vire les balises
 			$data = strip_tags($data) ;
@@ -312,7 +320,7 @@ function secure_data($data,$type="alnum") {
 		break ;
 
 		case "sqlhtml" :
-			
+
 			GLOBAL $db;
 			 //SQL secure with HTML tags
 			// zappe le magic_quote déprécié
@@ -327,7 +335,7 @@ function secure_data($data,$type="alnum") {
 
 		default : // int
 			$data =(int)preg_replace('|[^0-9.]|i', '', $data);
-			
+
 			if ( $data == "" ) $data = 0 ;
 		break ;
 	}
@@ -336,13 +344,15 @@ function secure_data($data,$type="alnum") {
 
 
 
-function is_alpha($inStr) { return (preg_match("/^[a-zA-Z]+$/",$inStr) != 0); } 
+function is_alpha($inStr) { return (preg_match("/^[a-zA-Z]+$/",$inStr) != 0); }
 
 
 function is_alpha_numeric($inStr) { return (preg_match("/^[a-zA-Z0-9]+$/",$inStr) != 0); }
 
 
-// XML Entity Mandatory Escape Characters or CDATA
+/**
+* XML Entity Mandatory Escape Characters or CDATA
+*/
 function xmlentities ( $string , $pcdata=FALSE)
 {
 if($pcdata == TRUE)
@@ -356,15 +366,19 @@ if($pcdata == TRUE)
 
 }
 
-//Reemplaza un valor de una matriz por otro
+/**
+* Reemplaza un valor de una matriz por otro
+*/
 function arrayReplace ( $arrayInicio, $arrayFinal, $string )
 {
     return str_replace ( $arrayInicio , $arrayFinal, $string );
 }
 
 
-// string 2 URL legible
-// based on source from http://code.google.com/p/pan-fr/
+/**
+* string 2 URL legible
+* based on source from http://code.google.com/p/pan-fr/
+*/
 function string2url ( $string )
 {
 		$string = strtr($string,
@@ -385,15 +399,19 @@ function string2url ( $string )
 		return $res;
 }
 
-//This function is a part of DAlbum.  Copyright (c) 2003 Alexei Shamov, DeltaX Inc.
-// replace <BR> with /n for text mode
+/**
+* This function is a part of DAlbum.  Copyright (c) 2003 Alexei Shamov, DeltaX Inc.
+* replace <BR> with /n for text mode
+*/
 function br2nl($text)
 {
     return preg_replace("/<br[\s\/]*>/i", "\n",$text,-1);
 }
 
-//This function is a part of DAlbum.  Copyright (c) 2003 Alexei Shamov, DeltaX Inc.
-// convert html to text
+/**
+* This function is a part of DAlbum.  Copyright (c) 2003 Alexei Shamov, DeltaX Inc.
+* convert html to text
+*/
 function html2txt($html)
 {
     $ret = strtr($html, array_flip(get_html_translation_table(HTML_ENTITIES)));
@@ -405,8 +423,10 @@ function html2txt($html)
 
 
 
-/* Convert wiki text to html for output */
-//This function is a part of http://svn.studentrobotics.org/ ide2/
+/**
+* Convert wiki text to html for output
+* This function is a part of http://svn.studentrobotics.org/ ide2/
+*/
 function wiki2html($wikitext)
 {
 	if(!isset($wikitext) || $wikitext == "")
@@ -428,10 +448,10 @@ function wiki2html($wikitext)
 }
 
 
-/*
-* Apartir de uma lista de palavras e uma palavra, 
+/**
+* Apartir de uma lista de palavras e uma palavra,
 * sugere uma palavra da lista que mais se parece com a palavra informada.
-// Fuente: Qiphp:Framework PHP Brasileiro voltado para sistemas legados. http://qiphp.googlecode.com/svn/
+* Fuente: Qiphp:Framework PHP Brasileiro voltado para sistemas legados. http://qiphp.googlecode.com/svn/
 */
 class Qi_Util_Similar
 {
@@ -444,7 +464,7 @@ class Qi_Util_Similar
 	public function __construct(array $lista, $palavra, $metodo = self::SIMILAR)
 	{
 		$this->lista = array_map("strtolower", $lista);
-		
+
 		$this->palavra = strtolower($palavra);
 		usort($this->lista, array($this, $metodo));
 	}
@@ -564,13 +584,13 @@ if(!$link = @mysqli_connect($server, $dbUser, $dbPass))
 	return false;
 }
 
-	   
+
 if (!mysqli_select_db($link,$dataBase))
 {
 	//echo "<h1>Could not select $_SERVER[REQUEST_URI].$dataBase database. Please check your settings in config.tematres.php.</h1>";
 	return false;
 }
-		
+
 return $link;
 }
 
@@ -589,12 +609,12 @@ $sql=$todo.' '.$sql;
 $sql=mysqli_query($db,"$sql");
 
 
-	if($todo=='insert') 
+	if($todo=='insert')
 	{
 		$cant=mysqli_insert_id($db);
 	}
-	else 
-	{    
+	else
+	{
 		$cant=mysqli_affected_rows($db);
 	};
 
@@ -612,9 +632,9 @@ return $result;
 };
 
 
-#
-# Datos del Tesauro
-#
+/**
+* Datos del Tesauro
+*/
 function SQLdatosTesaruo($tesauro_id){
 GLOBAL $DBCFG;
 
@@ -634,7 +654,7 @@ return SQL("select","id,
 };
 
 
-function SQLAuthUser($mail,$pass) 
+function SQLAuthUser($mail,$pass)
 {
 GLOBAL $DBCFG;
 
@@ -653,7 +673,7 @@ return SQL("select","usuario.id,
 
 
 //////////////////// ADMINISTRACION y GESTION ////////////////////////////
-if($_SESSION[$_SESSION["CFGURL"]][ssuser_id]){
+if(isset($_SESSION["CFGURL"]) && $_SESSION[$_SESSION["CFGURL"]][ssuser_id]){
   require('fun.admin.php');
   };
 ?>
