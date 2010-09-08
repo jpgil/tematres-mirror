@@ -3,7 +3,7 @@
 #                                                                        #
 #   Copyright (C) 2004-2008 Diego Ferreyra tematres@r020.com.ar
 #   Distribuido bajo Licencia GNU Public License, versión 2 (de junio de 1.991) Free Software Foundation
-#  
+#
 ###############################################################################################################
 # Abstraccion de funciones de consulta
 #
@@ -30,7 +30,7 @@ function fetchRelatedTerms($tema_id){
 	}
 
 
-// Devuelve array de términos no preferidos 
+// Devuelve array de términos no preferidos
 // array with "use for" or "alternative" or  "non prefered" terms for tema_id
 // array (tema_id, tema,t_relacion_id)
 function fetchAltTerms($tema_id){
@@ -157,7 +157,7 @@ function fetchTermNotes($tema_id){
 					"note_lang"=>$array[lang_nota],
 					"note_text"=>$array[nota]
 					);
-		};	
+		};
 	return $result;
 	}
 
@@ -179,7 +179,7 @@ function fetchTopTerms($arrayCfg){
 
 
 
-// Devuelve lista de términos para una lista separada por comas de tema_id 
+// Devuelve lista de términos para una lista separada por comas de tema_id
 // array(tema_id,string)
 function fetchTermsByIds($tema_id_list){
 
@@ -275,7 +275,7 @@ function fetchVocabularyData($vocabulary_id){
 
 //Devuelve un término con cadena similar para una una cadena de búsqueda
 //array($tema_id,$tema)
-function fetchSimilar($string) 
+function fetchSimilar($string)
 {
 	$sqlSimilar=SQLsimiliar($string);
 
@@ -290,16 +290,16 @@ function fetchSimilar($string)
 		$similar = new Qi_Util_Similar($listaCandidatos, $string);
 		$sugerencia= $similar->sugestao();
 	}
-	
-	if ($sugerencia) 
+
+	if ($sugerencia)
 	{
 		$result["result"]= array("string"=>$sugerencia);
 	}
-	else 
+	else
 	{
-		$result["result"]= array();		
+		$result["result"]= array();
 	}
-	
+
     return $result;
 }
 
@@ -312,11 +312,11 @@ function describeService(){
 	$array['status'] = (CFG_SIMPLE_WEB_SERVICE=='1') ? 'available' : 'disable';
 
 	$array['param'] = array("task","arg","output");
-	
+
 	$array['param']['task'] = "Action to do";
 	$array['param']['arg'] = "arguments for task action (eg: string for search task, numerical id for specific term data)";
 	$array['param']['output'] = "Output format, can be JSON or XML. Optional parameter, XML by default ";
-	
+
 
 	$array['web_service_version'] = $CFG["VersionWebService"];
 
@@ -424,7 +424,7 @@ if(CFG_SIMPLE_WEB_SERVICE !== "1"){
 // Controlar parametros
 
 	} elseif(is_array(evalServiceParam($task,$arg))) {
-	
+
 	return array2xml($evalParam);
 
 // Los param esta bien
@@ -496,7 +496,7 @@ if(CFG_SIMPLE_WEB_SERVICE !== "1"){
 		break;
 
 		case 'fetchTerms':
-		// Devuelve lista de términos para una lista separada por comas de tema_id 
+		// Devuelve lista de términos para una lista separada por comas de tema_id
 		// array(tema_id,string)
 		$response = $service-> fetchTermsByIds($arg);
 		break;
@@ -526,7 +526,7 @@ if(CFG_SIMPLE_WEB_SERVICE !== "1"){
 		}
 
 
-		
+
 	GLOBAL $CFG;
 
 	$arrayResume['status'] = (CFG_SIMPLE_WEB_SERVICE=='1') ? 'available' : 'disable';
@@ -535,44 +535,49 @@ if(CFG_SIMPLE_WEB_SERVICE !== "1"){
 
 	$arrayResume['web_service_version'] = $CFG["VersionWebService"];
 
-	$arrayResume['version'] = $CFG["Version"];		
+	$arrayResume['version'] = $CFG["Version"];
 
-	$arrayResume["cant_result"] = count($response["result"]);		
+	$arrayResume["cant_result"] = count($response["result"]);
 
 	$response["resume"] = $arrayResume;
 
-	
+
 	$xml_resume=array2xml($arrayResume, $name='resume', $standalone=FALSE, $beginning=FALSE);
- 	
+
 	$xml_response=array2xml($response, $name='terms', $standalone=TRUE, $beginning=FALSE,$nodeChildName='term');
 
 
-	if ($output == 'json') 
+	if ($output == 'json')
 	{
 		return array2json($response,'vocabularyservices');
 	}
-	else 
+    elseif ($output == 'jsonp')
+    {
+        // Just allowed chars in javascript callback function name
+        return preg_replace('/[^-a-zA-Z0-9_]/', '', $_GET['callback']) .'('. array2json($response,'vocabularyservices') .');';
+    }
+	else
 	{
 		return array2xml($response,'vocabularyservices');
 	}
-	
-	
-	
+
+
+
 	}
 }
 
 function evalServiceParam($task,$arg)
 {
-	
+
 switch($task){
 	case 'search':
 	$response = ((is_string($arg))&&(strlen($arg)>=CFG_MIN_SEARCH_SIZE)) ? TRUE : array("error"=>"invalid input");
 	break;
-	
+
 	case 'similarTerm':
 	$response = ((is_string($arg))&&(strlen($arg)>=CFG_MIN_SEARCH_SIZE)) ? TRUE : array("error"=>"invalid input");
 	break;
-	
+
 
 	case 'fetchRelated':
 	$response = (is_numeric($arg)) ? TRUE : array("error"=>"invalid input");
@@ -650,10 +655,10 @@ GLOBAL $CFG;
 
 $encode =($CFG["_CHAR_ENCODE"]=='latin1') ? "iso-8859-1" : "utf-8";
 
-if ($beginning) {	
+if ($beginning) {
 	if ($standalone) header("content-type:text/xml;$encode");
 	$output .= '<'.'?'.'xml version="1.0" encoding="'.$encode.'"'.'?'.'>';
-	
+
 	$output .= '<' . $name . '>';
 	$nested = 0;
 }
@@ -669,9 +674,9 @@ if ($beginning) {
 	$output .= str_repeat(" ", (2 * $nested)) . '  <' . (is_string($root) ? $root : $nodeChildName) . '><![CDATA[' . $child . ']]></' . (is_string($root) ? $root : $nodeChildName) . '>';
     }
   }
-  
+
 if ($beginning) $output .= '</' . $name . '>';
-  
+
 return $output;
 }
 
@@ -680,7 +685,7 @@ return $output;
 
 /*
 * Function from http://www.bin-co.com/php/scripts/array2json/
-* 
+*
 */
 
 function array2json(array $arr)
